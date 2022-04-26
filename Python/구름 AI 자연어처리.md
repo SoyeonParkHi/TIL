@@ -5,6 +5,9 @@
 * [Lecture 1 - Environment](#파이썬-환경)
 * [Lecture 2 - Variable & Operator](#변수--연산자)
 * [Lecture 3 - Data Structure](#자료구조)
+* [Lecture 4 - Condition & Loop](#조건문--반복문)
+* [Lecture 5 - Function](#함수)
+* [Lecture 6 - Pythonic Programming](#파이써닉한-프로그래밍)
 
 ### 파이썬 특징
 * 플랫폼 독립적인 인터프리터 언어
@@ -252,3 +255,87 @@ s1 ^ s2 # {1,2,5,6} 배타적 합집합
 ### Frozenset
 * 불변 타입의 set
 * 딕셔너리의 key 값으로 사용 가능(set은 불가)
+
+## 조건문 & 반복문
+* 제어문 - else
+    - Else문으로 반복을 완전히 돌았을 경우 실행되는 block 지정 가능
+    - Break로 중간에 나오게 되면 Else 문이 실행되지 x
+
+## 함수
+* 인자로 받은 값을 바로 수정하는 것은 권장하지 않음
+    - out-place로 복사해서 사용 권장
+* 상위 변수 사용 선언
+    - 함수 맨 앞에 선언
+    - global : 최상위 변수
+    - nonlocal : 바로 상위 변수
+    - 스파게티 코드의 주 원인이므로 사용하지 않는 것 권장
+* 순수함수 : 인자 값이 같을 때, 반환 값도 같은 함수
+* 프로그램을 스파게티로 만들지 않는 법
+    1. 상위 객체엔 가능하면 접근하지 않기
+    2. 되는대로 모두 파라미터로 받기
+    3. 최상위 선언도 가급적 지양
+* Closure를 만드는 방법
+    - 파이썬에서 closure는 factory 형식으로 사용
+    - 파이썬에서는 함수도 일반 객체(일급 객체)이므로 변수 및 파라미터, 리턴값 등 할당 가능
+
+### 꾸밈자(Decorator)
+* 함수 하나를 인자로 받아 같은 형태의 함수를 반환하는 함수
+* @을 사용하여 함수를 꾸미는데 사용 가능
+* Decorator에 인자를 추가하기 위해선 함수를 한번 더 wrapping 필요
+* 함수를 wrapping하기 때문에 기존 함수에 접근 불가(함수명 등)
+    - functools 라이브러리의 wraps 데코레이터 사용
+
+### 재귀함수
+* 자기 자신을 호출하여 반복적으로 수행
+* ex)
+```python
+def factorial(n) :
+    if n == 1 :
+        return 1
+    return n * factorial(n-1)
+print(factorial(5)) #120
+```
+
+### Keyword Variable Length Parameter
+* 키워드 가변인자 : 명시적으로 지정되었지만 파라미터가 남으면 남는 키워드 변수를 딕셔너리 형태로 packing
+* **(Double asterisk)를 사용
+* 파라미터 순서 : 일반 인자 → 기본값(키워드) 인자 → 가변 인자 → 키워드 가변인자
+* ex)
+```python
+def function(var1,var2=10,*args,**kwargs):
+    print(var1, var2, args, kwargs)
+function(1,2,3,var3=10) # 1 2 (3,) {'var3':10} 출력
+```
+
+### Parameter Unpacking
+* Sequence에 *을 붙이면 unpacking
+    - 리스트, 튜플에 적용 가능
+    - ex)
+    ```python
+    def function(a, b, c) :
+        print(a, b, b)
+    l = [1, 2, 3]
+    function(*1) # 1 2 3 출력
+    ```
+* Dictionary에 **을 붙이면 Keyword unpacking
+    - ex)
+    ```python
+    def function(var1, var2, **kwargs) :
+        print(var1, var2, kwargs)
+    d = {'var1':10, 'var2':20, 'var3':30}
+    function(**d) # 10 20 {'var3':30} 출력
+
+### Type hints
+* 파이썬은 동적 타이핑이므로 interface를 알기 어렵고 가독성이 낮아질 수 있음
+* 함수에 타입 힌드 제공이 가능
+    - 함수명(변수 : 자료형, ...)의 형태
+    - ex)
+    ```python
+    # string과 integer를 받아 string을 반환
+    def multiply_text(text : str, n : int) -> str :
+        return text * n
+    ```
+* 타입힌트와 실제 인수의 타입이 달라도 에러 x
+    - 타입 검사 하지 x, 코드 가독성을 높이기 위함
+
+## 파이써닉한 프로그래밍

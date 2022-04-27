@@ -8,6 +8,8 @@
 * [Lecture 4 - Condition & Loop](#조건문--반복문)
 * [Lecture 5 - Function](#함수)
 * [Lecture 6 - Pythonic Programming](#파이써닉한-프로그래밍)
+* [Lecture 7 - Object-Oriented Programming](#객체-지향-프로그래밍)
+* [Lecture 8 - Module & Package](#모듈--패키지)
 
 ### 파이썬 특징
 * 플랫폼 독립적인 인터프리터 언어
@@ -97,7 +99,7 @@ print((a := 2) == 2 #True
 * 삼항연산자 : A if 조건 else B
 
 ### 원시자료형 특징
-* 원시자료형(Primitive Data Type)은 **불변타입(Immutable Type)**이다.
+* 원시자료형(Primitive Data Type)은 **불변타입(Immutable Type)** 이다.
     - 파이썬의 모든 것은 객체이기 때문에 원시자료형들 역시 객체
     - 그러나 불변 타입들은 저장된 값이 변하지 x
     - 모든 타입은 물리적 메모리 주소를 가르킴(C에서의 pointer)
@@ -339,3 +341,269 @@ function(1,2,3,var3=10) # 1 2 (3,) {'var3':10} 출력
     - 타입 검사 하지 x, 코드 가독성을 높이기 위함
 
 ## 파이써닉한 프로그래밍
+
+### Comprehension
+* List, Dictionary 등을 빠르게 만드는 기법
+    - for + append보다 속도 빠름
+    - ex)
+    ```python
+    result = []
+    for i in range(10) : 
+        result.append(i*2)
+    # Comprehension
+    result = [i * 2 for i in range(10)]
+
+    result = {}
+    for i in range(10) :
+        result[str(i)] = i
+    # Comprehension
+    result = {str(i) : i for i in range(10)}
+
+    result = set()
+    for i in range(10) :
+        result.add(str(i))
+    # Comprehension
+    result = {str(i) for i in range(10)}
+    ```
+* If문을 마지막에 달아 원하는 요소만 추가 가능
+```python
+evens = [i for i in range(100) if i % 2 == 0]
+```
+* 이중 for문 사용 가능
+```python
+result = [(i,j) for i in range(5) for j in range(i)]
+# [(1,0),(2,0),(2,1),(3,0),(3,1),(3,2),(4,0),(4,1),(4,2),(4,3)]
+```
+* 다차원 배열 만들기가 매우 유용
+```python
+eye = [[int(i == j) for j in range(5)] for i in range(5)]
+# identity matrix(단위행렬)
+```
+
+### Generator
+* 요소를 하나씩 생성해서 반환하는 객체
+    - 함수에 yield를 사용
+    - yield 하는 위치에서 값을 반환
+    - return과 유사하나 return은 반환 후 반복을 멈춤
+    - yield는 다시 값을 요청받을 시 yield 다음 줄부터 실행
+    - 시퀀스 전체를 생성하는 것이 아니므로 메모리 효율적
+        + 매우 큰 데이터 셋을 처리할 때 사용 권장
+    - 괄호로 Generator Comprehension 형태로 선언 가능
+        + ex ) even)=_generator = (i * 2 for i in range(100))
+        + 함수 등으로 이미 괄호가 쳐져 있다면 괄호 생략 가능
+
+### 내장함수(Built-in Function)
+* sum([Iterable])
+* any([Iterable]), all([Iterable])
+```python
+>>> any([False, True, False]) # 하나라도 참
+True
+>>> all([False, True, False]) # 모두 참
+False
+```
+* max([Iterable]), min([Iterable])
+* zip
+    - 2개 이상의 순환 가능한 객체를 앞에서부터 한 번에 접근할 때 사용
+        + 길이가 다를 때는 남는 것 버림
+        + Tuple로 반환
+    - Unpacking을 이용하여 2차원 리스트의 열 단위 접근 가능
+    ```python
+    array = [[1,2,3],[4,5,6],[7,8,9]]
+    for col in zip(*array) :
+        print(col) # 열 단위 접근
+    ```
+    - seq2 = zip(*seq1)의 역연산은 seq1 = zip(*seq2) : 전치행렬 원리
+* enumerate
+    - for문에서 시퀀스를 돌면서 index가 필요한 경우에 사용
+    ```python
+    seq = ['This','is','sentence']
+    for i, word in enumerate(seq) :
+        print(i,word)
+    # 0 This
+    # 1 is
+    # 2 sentence 출력
+    ```
+    - zip과 enumerate를 동시에 사용하는 등 여러 Generator를 한번에 사용 가능
+    - Generator를 List 형태로 출력하기 위해서 list로 변환 필요
+* Lambda Function(람다 함수)
+    - 여러 줄, 구문을 쓸 수 없음
+    - 공식적으로는 사용을 권장하지 않음
+        + 문서화 지원 미비
+        + 자원 관리에 불편
+        + 복잡한 함수 작성 시 가독성 하락
+* map(함수, 시퀀스)
+* filter(함수, 시퀀스)
+    - 각 요소에 function 함수를 적용하여 참이 나오는 것만 반환
+    ```python
+    seq = [6,-2,8,4,-5]
+    list(filter(lambda x : x>0,seq)) # [6,8,4] 출력
+    ```
+## 객체 지향 프로그래밍
+* 객체 단위의 코드 작성 및 분업
+* 각 클래스(Class)당 객체(Object)가 하나만 존재하진 않는다. 그러나 각 객체의 속성(Attribute)는 달라도 행동(Method)은 동일하다.
+
+### 클래스
+```python
+class Courier(object) : # 클래스 선언(Object) 생략 가능 
+    NATIONALITY = 'KOR' # 클래스 속성(Attribute)
+
+    def __init__(self, name:str, address:str) : # 생성자
+        self.name = name    # 속성
+        self.address = address
+        self.parcels = []
+
+    def assign(self, parcel:str) -> None :
+        self.parcels.append(parcel)
+    
+    def deliver(self) -> None : 
+        for parcel in self.parcels :
+            print(parcel, '배달중')
+
+# 객체 생성
+courier1 = Courier('김기사', '경기도 성남시 정자동')
+
+# 속성 출력
+print(courier1.name,'-',courier1.address,'근무중')
+
+# 메소드 실행
+courier1.assign('TV 상자')
+courier1.assign('편지')
+courier1.deliver()
+```
+
+* 클래스 선언부
+    - 클래스 이름은 Camel 표기법(단어 첫 알파벳 대문자로)이 관습적으로 사용됨
+    - 부모 클래스가 지정되지 않았을 시 object가 자동 상속(python3)
+* 클래스 속성(Attribute)
+    - 클래스 전체가 공유하는 속성 값
+    - 모든 객체(Instance)가 같은 값을 참조
+    - 남용하면 스파게티 코드의 원인이 됨
+    - 클래스.속성 또는 객체.속성 형태로 접근
+* 클래스 함수(Method)
+    - 각 객체에 적용이 가능한 함수
+    - 현재 수정하고자 하는 객체를 'self'로 지칭(관습)
+    - 파이썬은 'self'를 첫번째 파라미터로 명시적으로 받음
+    - 클래스.메소드(객체,파라미터,..) 또는 **객체.메소드(파라미터..)**
+* 객체 속성(Attribute)
+    - 각 객체가 개인적으로 가지는 값
+    - 객체.속성의 형태로 접근
+    - 클래스 형태로 선언되어 나온 객체는 언제 어디서든 속성 수정 가능(권장x)
+        + ex)
+        ```python
+        courier1 = Courier('김기사','경기도 성남시 정자동')
+        courier1.value = 10 # value는 클래스 속성에 정의되지 않았지만 값 부여 가능
+        print(courier1.value) # 10 출력
+        ```
+* Magic Method : 생성자(Initializer)
+    - 객체를 생성할 때 호출됨
+    - 일반적으로 객체의 속성을 초기화(혹은 초기값 설정)하는 데 사용
+    - 객체 = 클래스(arg...)의 형태로 호출하여 객체 생성
+    - Argument format이 x
+* Magic Method : 소멸자(Destroyer)
+```python
+class Courier(object) :
+    def __del__(self) : # 소멸자
+        self.parcels.clear()
+```
+    - 객체를 소멸할 때 호출됨
+    - 파이썬은 쓰레기 수거(Garbage Collection)로 메모리 관리
+        + 객체가 어디에서도 참조되지 않을 때 소멸
+        + 잘 사용되지 x
+    - del 명령어 : 참조 삭제 o 객체 삭제 x
+
+### 상속(Ingeritance)
+* 자식 class가 부모 class의 기능을 이용 가능
+* 파이썬에서는 다중 상속 지원
+    - 참조할 때 메소드 탐색 순서(mro)를 따름
+    - super 내장함수를 이용해 상위 클래스 접근 가능
+
+### 다형성(Polymorphism)
+* 같은 이름의 메소드를 다르게 작성
+    - 부모 메소드로 접근 시 자식 메소드 실행
+    - 외부에서는 똑같은 API로 접근하여 코드 수정이 X
+
+* 상속&다형성 예시
+```python
+# 부모클래스
+class Courier : 
+    def __init__(self, name:str) :
+        self.name = name
+        self.parcels = []
+
+    def assign(self, parcel:str) -> None :
+        self.parcels.append(parcel)
+    
+    def deliver(self) -> None : 
+        for parcel in self.parcels :
+            print(parcel, '배달중', self.address)
+
+# 자식클래스
+class JejuCourier(Courier) :
+    def __init__(self, name:str, ticket:int) :
+        super().__init__(name)  # 부모클래스 생성자 접근(정해진 호출 타이밍 無)
+        self.ticket = ticket
+    
+    def deliver(self) -> None :
+        print(self.ticket, '티켓으로 제주도 이동')
+        super().deliver()
+
+courier = JejuCourier('김기사', 15)
+courier.assign('편지')
+courier.deliver()
+super(JejuCourier,courier).deliver() # super로 언제나 원하는 상위 클래스로 변환 및 접근 가능 / 클래스 밖에서 호출할때는 (클래스, 객체)로 호출
+
+"""출력
+15 티켓으로 제주도 이동
+편지 배달중
+편지 배달중 (super문으로 출력됨)""" 
+```
+* 파이썬에는 2가지 정적 함수 존재
+    - 일반적으로 클래스.메소드 형태로 사용
+    - Static Method
+        + staticmethod 꾸밈자 사용
+        + 특별한 arg 받지 x
+        + 일반적으로 class 내 유틸함수로 사용
+        + Class를 일종의 Namespace로 사용
+    - Class Method
+        + Classmethod 꾸밈자 사용
+        + 호출된 class인 cls를 받음(self와 비슷)
+        + factory 패턴에서 사용
+    - 유사하나 상속하면 차이가 발생
+
+### 가시성(Visibility), 캡슐화
+* 다른 클래스에게 객체의 내부를 감추기
+    - 캡슐화, 정보 은닉
+    - 클래스 간 간섭 최소화
+    - 최소한의 정보만을 지정된 API로 공개
+    - C나 Java에서는 private & protected로 구현하나 Python에서는 명시적으로는 모두 public
+    - private 변수/함수 이름 앞에 __를 붙임
+    - protected 변수/함수 이름 앞에 _를 붙임
+    - public과 기능적 차이는 없으나 가독성을 위해 작성
+* Property
+    - Getter, Setter를 명시적으로 설정 가능
+    - Encapsulation 등에 활용
+    - 가독성을 위해 적재적소에 활용
+
+### Magic Methods
+* Indexing : &#95;&#95;getitem&#95;&#95;, &#95;&#95;setitem&#95;&#95;
+    - [] 인덱싱을 재정의
+* Length : &#95;&#95;len&#95;&#95;
+* Typing : &#95;&#95;str&#95;&#95;, &#95;&#95;int&#95;&#95;, &#95;&#95;float&#95;&#95;, &#95;&#95;bool&#95;&#95;
+    - 객체를 다른 타입으로 형 변환할때 호출
+* Comparison Operator : &#95;&#95;lt&#95;&#95;, &#95;&#95;le&#95;&#95;, &#95;&#95;gt&#95;&#95;, &#95;&#95;ge&#95;&#95;, &#95;&#95;eq__, &#95;&#95;ne__
+    - &#95;&#95;lt__ : A < B를 호출 → A.&#95;&#95;lt__(B)를 호출
+* Arithmetetic Operator : &#95;&#95;add__, &#95;&#95;sub__, &#95;&#95;mul__
+    - in-place 버전인 __iadd__가 존재 : 이 경우 self를 직접 수정 필요
+* Callable : &#95;&#95;call__
+    - 생성된 객체를 호출 가능하게 만듦
+    - instance(args...)가 instance.&#95;&#95;call__(args...)를 호출
+* Iterable
+    - iter 내장함수 : 해당 객체의 순환자 반환, &#95;&#95;iter__ 호출
+    - next 내장함수 : 해당 순환자를 진행, &#95;&#95;next__ 호출
+    - 끝에서 Stopiteration Exception
+    - Generator는 자동으로 &#95;&#95;iter__와 &#95;&#95;next__가 구현
+* Context Manager : &#95;&#95;enter__, &#95;&#95;exit__
+    - 소멸자 대용으로 특정 Block 입장/종료 시 자동으로 호출
+    - File description 등을 자동으로 닫고자 할 때 사용
+
+## 모듈 & 패키지

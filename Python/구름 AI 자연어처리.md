@@ -228,6 +228,7 @@ print(a,b,c) # 1 [2,3,4] 5 출력
 * 불변타입으로만 이루어져 있으면 key로 사용 가능
 
 ### Dictionary 시간복잡도
+![Alt text](/Python/Dict-Big(O).png)
 * 딕셔너리는 Hash로 구현 : indexing 속도가 O(1)
 * Delete, Clear : O(1)
     - d.clear : in-place

@@ -646,11 +646,11 @@ courier1.deliver()
     - 객체 = 클래스(arg...)의 형태로 호출하여 객체 생성
     - Argument format이 x
 * Magic Method : 소멸자(Destroyer)
-```python
-class Courier(object) :
-    def __del__(self) : # 소멸자
-        self.parcels.clear()
-```
+    ```python
+    class Courier(object) :
+        def __del__(self) : # 소멸자
+            self.parcels.clear()
+    ```
     - 객체를 소멸할 때 호출됨
     - 파이썬은 쓰레기 수거(Garbage Collection)로 메모리 관리
         + 객체가 어디에서도 참조되지 않을 때 소멸
@@ -662,6 +662,7 @@ class Courier(object) :
 * 파이썬에서는 다중 상속 지원
     - 참조할 때 메소드 탐색 순서(mro)를 따름
     - super 내장함수를 이용해 상위 클래스 접근 가능
+
 
 ### 다형성(Polymorphism)
 * 같은 이름의 메소드를 다르게 작성
@@ -681,7 +682,7 @@ class Courier :
     
     def deliver(self) -> None : 
         for parcel in self.parcels :
-            print(parcel, '배달중', self.address)
+            print(parcel, '배달중')
 
 # 자식클래스
 class JejuCourier(Courier) :
@@ -707,14 +708,36 @@ super(JejuCourier,courier).deliver() # super로 언제나 원하는 상위 클�
     - 일반적으로 클래스.메소드 형태로 사용
     - Static Method
         + staticmethod 꾸밈자 사용
-        + 특별한 arg 받지 x
+        + 특별한 arg 받지 x (self같은)
         + 일반적으로 class 내 유틸함수로 사용
         + Class를 일종의 Namespace로 사용
     - Class Method
         + Classmethod 꾸밈자 사용
         + 호출된 class인 cls를 받음(self와 비슷)
         + factory 패턴에서 사용
+    - ex )  
+    ```python
+    class Number :
+        Constant = 10
+        
+        @staticmethod
+        def static_factory() :
+            obj = Number()       # Number 클래스의 객체 생성
+            obj.value = Number.Constant
+            return obj
+            
+        @classmethod
+        def class_factory(cls) : # self처럼 cls에 Number를 받음
+            obj = cls()
+            obj.value = cls.Constant
+            return obj
+        
+        number_static = Number.static_factory()
+        number_class = Number.class_factory()
+        print(number_static.value, number_class.value) # 10 10 출력
+    ```
     - 유사하나 상속하면 차이가 발생
+        + 예를 들면, Number의 자식클래스인 Complex를 만들었을 때 Complex.static_factory는 Number 객체 반환. (static에 number가 지정되어있기 때문) 하지만 class_factory에서는 cls에 Complex를 받아 반환
 
 ### 가시성(Visibility), 캡슐화
 * 다른 클래스에게 객체의 내부를 감추기
@@ -722,11 +745,62 @@ super(JejuCourier,courier).deliver() # super로 언제나 원하는 상위 클�
     - 클래스 간 간섭 최소화
     - 최소한의 정보만을 지정된 API로 공개
     - C나 Java에서는 private & protected로 구현하나 Python에서는 명시적으로는 모두 public
-    - private 변수/함수 이름 앞에 __를 붙임
+    - private 변수/함수 이름 앞에 __를 붙임 : 변수명 앞에 Class 이름을 넣어 Mangling(이름을 바꿈)
     - protected 변수/함수 이름 앞에 _를 붙임
+    ```python
+    class TestClass(object) :
+        def __init__(self) :
+            self.attr = 1   # Public
+            self._attr = 2  # Protected
+            self.__attr = 3 # Private
+        
+    instance = TestClass()
+    print(dir(instance))
+    # ['_TestClass__attr','_attr','attr'] 출력
+    ```
     - public과 기능적 차이는 없으나 가독성을 위해 작성
 * Property
     - Getter, Setter를 명시적으로 설정 가능
+    - ex)  
+    ```python
+    class Circle :
+    PI = 3.141592
+    def __init__(self, radius=3,) :
+        self.radius = radius
+        
+    def get_area(self) :
+        return Circle.PI * self.radius ** 2
+    
+    def set_area(self, value) :
+        self.radius = (value / Circle.PI) ** .5
+        
+    circle = Circle(5.)
+    print(circle.get_area())
+    circle.set_area(10)
+    print(circle.radius)
+    # 78.5398
+    # # 1.7841243... 출력
+
+    #Property
+    class Circle : 
+        PI = 3.141592
+        def __init__(self, radius=3,) :
+            self.radius = radius
+            
+        @property
+        def area(self) :
+            return Circle.PI * self.radius ** 2
+    
+        @area.setter
+        def area(self, value) :
+            self.radius = (value / Circle.PI) ** .5
+            
+    circle = Circle(5.)
+    print(circle.area) # area 메소드 실행 - 꾸밈자가 메소드를 속성값처럼
+    
+    circle.area = 10 # circle이 area.setter의 self로, 10이 value로
+    print(circle.radius)
+    ```
     - Encapsulation 등에 활용
     - 가독성을 위해 적재적소에 활용
 
@@ -736,20 +810,31 @@ super(JejuCourier,courier).deliver() # super로 언제나 원하는 상위 클�
 * Length : &#95;&#95;len&#95;&#95;
 * Typing : &#95;&#95;str&#95;&#95;, &#95;&#95;int&#95;&#95;, &#95;&#95;float&#95;&#95;, &#95;&#95;bool&#95;&#95;
     - 객체를 다른 타입으로 형 변환할때 호출
-* Comparison Operator : &#95;&#95;lt&#95;&#95;, &#95;&#95;le&#95;&#95;, &#95;&#95;gt&#95;&#95;, &#95;&#95;ge&#95;&#95;, &#95;&#95;eq__, &#95;&#95;ne__
+* Comparison Operator : &#95;&#95;lt&#95;&#95(<), &#95;&#95;le&#95;&#95;(<=), &#95;&#95;gt&#95;&#95;(>), &#95;&#95;ge&#95;&#95;(>=), &#95;&#95;eq__(==), &#95;&#95;ne__(!=)
     - &#95;&#95;lt__ : A < B를 호출 → A.&#95;&#95;lt__(B)를 호출
-* Arithmetetic Operator : &#95;&#95;add__, &#95;&#95;sub__, &#95;&#95;mul__
+* Arithmetetic Operator : &#95;&#95;add__(+), &#95;&#95;sub__(-), &#95;&#95;mul__(*)
     - in-place 버전인 __iadd__가 존재 : 이 경우 self를 직접 수정 필요
 * Callable : &#95;&#95;call__
     - 생성된 객체를 호출 가능하게 만듦
+    - arguments 형식 제한 x (__init__처럼)
     - instance(args...)가 instance.&#95;&#95;call__(args...)를 호출
 * Iterable
     - iter 내장함수 : 해당 객체의 순환자 반환, &#95;&#95;iter__ 호출
     - next 내장함수 : 해당 순환자를 진행, &#95;&#95;next__ 호출
-    - 끝에서 Stopiteration Exception
+    - 끝에서 Stopiteration Exception (error? 종료 역할)
     - Generator는 자동으로 &#95;&#95;iter__와 &#95;&#95;next__가 구현
 * Context Manager : &#95;&#95;enter__, &#95;&#95;exit__
-    - 소멸자 대용으로 특정 Block 입장/종료 시 자동으로 호출
+    - 소멸자 대용으로 특정 Block(with문) 입장(enter)/종료(exit) 시 자동으로 호출
     - File description 등을 자동으로 닫고자 할 때 사용
+    - enter에서 return값은 (with ~) as 이하로 할당
+
 
 ## 모듈 & 패키지
+* 다른 파일의 함수 혹은 클래스 등을 사용하거나 내장 & 외부 라이브러리를 사용하기 위해 모듈화가 필요
+
+### Import
+* 파이썬에서 .py 파일 하나가 모듈
+* 해당 파일 최상위에 선언된 모듈의 요소들을 불러올 수 있다.
+* . 혹은 .. 없이는 절대 경로 기준 (Python이 실행되는 곳)
+* Import문은 import된 .py 파일을 처음부터 끝까지 실행시킨다.
+* 

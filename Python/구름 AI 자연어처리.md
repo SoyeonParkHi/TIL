@@ -836,5 +836,5 @@ super(JejuCourier,courier).deliver() # super로 언제나 원하는 상위 클�
 * 파이썬에서 .py 파일 하나가 모듈
 * 해당 파일 최상위에 선언된 모듈의 요소들을 불러올 수 있다.
 * . 혹은 .. 없이는 절대 경로 기준 (Python이 실행되는 곳)
-* Import문은 import된 .py 파일을 처음부터 끝까지 실행시킨다.
+* Import문은 import된 .py 파일을 처음부터 끝까지 실행시킨다. (Global)
 * 

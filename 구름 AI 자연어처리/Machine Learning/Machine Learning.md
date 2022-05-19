@@ -1,5 +1,6 @@
 ## 목차
 * [Lenear regression with one variable](#linear-regression-with-one-variable)
+* [Linear Regression with multiple variables](#linear-regression-with-multiple-variables)
 
 ## Linear regression with one variable
 
@@ -31,6 +32,12 @@
     - Convex function : 볼록함수
     - Non-convex function : local minima가 존재(국소의 여러 최소)
 * Repeat until convergence {$\theta_j := \theta_j - \alpha\frac{\partial}{\partial\theta_j}J(\theta_0,\theta_1)$}
-* Simultaneous update
-temp0 := 
+    - $\alpha$ = step size, learning rate
+* Simultaneous update  
+temp0 := $\theta_0 - \alpha\frac{\partial}{\partial\theta_0}J(\theta_0,\theta_1)$  
+temp1 := $\theta_1 - \alpha\frac{\partial}{\partial\theta_1}J(\theta_0,\theta_1)$  
+$\theta_0$ := temp0  
+$\theta_1$ := temp1
 
+## Linear Regression with multiple variables
+### Multiple features

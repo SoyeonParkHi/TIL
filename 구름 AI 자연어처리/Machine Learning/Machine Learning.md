@@ -41,3 +41,18 @@ $\theta_1$ := temp1
 
 ## Linear Regression with multiple variables
 ### Multiple features
+* Notation
+    - n = number of features
+        + feature = dimension = attribute (같은 의미로 사용)
+    - $x^{(i)}$ = input (features) of $i^{th}$ training example
+    - $x_j^{(i)}$ = value of feature $j$ in $i^{th}$ training example
+    - ex) $x_3^{(2)}$ = 2번째 training example에서 3번째 feature의 값
+* Target variable은 보통 한번에 하나만 처리
+* Feature vector = 한 training example의 feature 값을 column vector로 표현
+    - row vector로 나타내고자 할때는 transpose 이용
+* $h_\theta(x) = \theta_0 + \theta_1x_1 + \theta_2x_2 + ... + \theta_nx_n = \theta^Tx$
+    - $x_0$ = 0
+    - x = $\begin{bmatrix} x_0 \\ x_1 \\ ... \\ x_n \end{bmatrix}$
+    - $\theta = \begin{bmatrix} \theta_0 \\ \theta_1 \\ ... \\ \theta_n \end{bmatrix}$
+
+### Gradient descent in practice 1 : Feature Scaling

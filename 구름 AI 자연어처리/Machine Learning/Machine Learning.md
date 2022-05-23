@@ -1,6 +1,7 @@
 ## 목차
 * [Lenear regression with one variable](#linear-regression-with-one-variable)
 * [Linear Regression with multiple variables](#linear-regression-with-multiple-variables)
+* [Logistic Regression](#logistic-regression)
 
 ## Linear regression with one variable
 
@@ -34,8 +35,8 @@
 * Repeat until convergence {$\theta_j := \theta_j - \alpha\frac{\partial}{\partial\theta_j}J(\theta_0,\theta_1)$}
     - $\alpha$ = step size, learning rate
 * Simultaneous update  
-temp0 := $\theta_0 - \alpha\frac{\partial}{\partial\theta_0}J(\theta_0,\theta_1)$  
-temp1 := $\theta_1 - \alpha\frac{\partial}{\partial\theta_1}J(\theta_0,\theta_1)$  
+temp0 := $\theta_0 - \alpha\frac{\partial}{\partial\theta_0}J(\theta_0,\theta_1) = \theta_0 - \alpha\frac{1}{m}\displaystyle\sum_{i=1}^{m}(h_\theta(x^{(i)})-y^{(i)})$    
+temp1 := $\theta_1 - \alpha\frac{\partial}{\partial\theta_1}J(\theta_0,\theta_1) = \theta_1 - \alpha\frac{1}{m}\displaystyle\sum_{i=1}^{m}(h_\theta(x^{(i)})-y^{(i)})x^{(i)}$  
 $\theta_0$ := temp0  
 $\theta_1$ := temp1
 
@@ -56,3 +57,34 @@ $\theta_1$ := temp1
     - $\theta = \begin{bmatrix} \theta_0 \\ \theta_1 \\ ... \\ \theta_n \end{bmatrix}$
 
 ### Gradient descent in practice 1 : Feature Scaling
+* Min-max Normalization
+    - 최대, 최소값을 이용해 $0\le x\le1$ 또는 $-1\le x\le1$으로 scaling
+* Mean Normalization
+    - normalized $x = \frac{x-mean}{stadard deviation}$
+* Mean normalization이 더 자주 사용된다
+    - Min-max normalization은 outlier(극단치) 처리에 취약하기 때문
+* Gradient Descent   
+Repeat {$\theta_j := \theta_j - \alpha\frac{1}{m}\displaystyle\sum_{i=1}^{m}(h_\theta(x^{(i)})-y^{(i)})x_j^{(i)}$}  
+$\theta_0 := \theta_0 - \alpha\frac{1}{m}\displaystyle\sum_{i=1}^{m}(h_\theta(x^{(i)})-y^{(i)})x_0^{(i)}$  
+$\theta_1 := \theta_1 - \alpha\frac{1}{m}\displaystyle\sum_{i=1}^{m}(h_\theta(x^{(i)})-y^{(i)})x_1^{(i)}$  
+...  
+$\theta_n := \theta_n - \alpha\frac{1}{m}\displaystyle\sum_{i=1}^{m}(h_\theta(x^{(i)})-y^{(i)})x_n^{(i)}$  
+
+### Features and polynomial regression
+* $x$에 컬럼을 추가하여 Linear Regression with multiple variables 수행
+    - ex) $h(x) = \theta_0 + \theta_1(size) + \theta_2\sqrt{(size)}$에서 variable이 3개인 것과 같이 linear regression 수행
+
+## Logistic Regression
+### Classification
+* Binary classification에 대해 논의 : $y ∈ \lbrace 0, 1 \rbrace$
+    - $y = 0 or 1$이어야 하는데 $h_\theta$가 1을 초과하거나 0 미만일 수 있으므로, 기존의 linear regression으로는 불가능
+### Hypothesis Representation
+* Logistic Regression Model
+    - $0\le h_\theta(x) \le 1$을 위해  
+    $h_\theta(x) = g(\theta^Tx)$에서 $g(z) = \frac{1}{1+e^{-z}}$  
+    $\therefore h_\theta(x) = \frac{1}{1+e^{-\theta^Tx}}$
+        - $g(z)$는 sigmoid function 또는 logistic function
+### Decision boundary
+### Cost function
+### Simplified cost function and gradient descent
+### Multi-class classificarion : One-vs-all

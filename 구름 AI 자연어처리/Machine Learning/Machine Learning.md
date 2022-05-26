@@ -148,3 +148,36 @@ $\theta_j:=\theta_j - \alpha \frac{\partial}{\partial\theta_j}J(\theta)$에서 $
 * train set을 train set + validation set으로 분리한 뒤, validation set을 사용해 검증하는 방식
 * LOOCV(Leave-One-Out Cross Validation)
     - 전체 train set에서 1개의 샘플을 선택하여 그것을 모델 검증에 사용하는 것을 반복하는 방법
+    - 학습 양이 많아 속도가 느리지만, imbalance한 상황에서 유용하게 사용될 수 있다.
+* k-fold
+    - 전체 데이터를 k등분하여 validation set으로 사용하고, 나머지는 training set으로 학습
+    - LOOCV에 비해 속도가 빠르다.
+* Train, Validation, Test data
+    - Train data로 학습(가중치 결정)
+    - Validation data로 검증($\lambda$ 결정)
+    - Test data로 테스트(오차, 정확도 예측)
+
+### Demensionality Reduction
+* High-dim data를 low-dim data로 변환(No. of dimension 필요)
+* 장점
+    - Less storage
+    - Faster computation
+    - Noise removal(improving data quality)
+        + 얼굴 구분할 때, 안경 유무, 조명 효과 등의 요소 제거
+    - 시각화(2D/3D representation)
+* Feature Selection
+    - Forward selection : Empty set $\rarr$ Add one variable at a time
+        + ex) 100개 중 1개의 변수를 골라 학습 $\rarr$ 가장 성능이 좋은 변수 1개 선택 $\rarr$ 선택한 변수와 남은 99개의 변수중 하나를 합해 2개의 변수로 학습 $\rarr$ 성능이 좋은 변수 1개 선택하여 선택한 2개의 변수와 남은 98개의 변수 중 1개 선택 $\rarr$ n개까지 반복
+    - Backward elimination : Entire set $\rarr$ Remove one variable at a time
+        + ex) 100개 중 1개 변수만 제외해 학습 $\rarr$ 없을 때 가장 성능이 좋아지는 변수 1개 제거 $\rarr$ 남은 99개중 1개의 변수 제외해 학습 $\rarr$ n번 반복
+* Feature Extraction
+    - 여러개의 feature(=variable, dimension)가 결합되어 reduced dimension 구성
+    - Linear vs Non-linear
+        + Linear : 각 reduced dimension을 original dimension의 선형 결합으로 표현
+
+### Principal Component Analysis(PCA)
+
+
+
+
+

@@ -4,6 +4,8 @@
 * [Logistic Regression](#logistic-regression)
 * [Regularization](#regularization)
 * [Cross Validation & Demensionality Reduction](#cross-validation--demensionality-reduction)
+* [Clustering](#clustering)
+* [Neural Network](#neural-network)
 
 ## Linear regression with one variable
 
@@ -176,7 +178,86 @@ $\theta_j:=\theta_j - \alpha \frac{\partial}{\partial\theta_j}J(\theta)$에서 $
         + Linear : 각 reduced dimension을 original dimension의 선형 결합으로 표현
 
 ### Principal Component Analysis(PCA)
+* Largest variation을 나타내는 축을 찾아 모든 point를 축에 project하는 기법 (데이터가 가장 넓게 분포되어 있도록)
+* Reduced dimension들은 orthogonal하다.
+* 알고리즘 : Eigen-decomposition
+* Linear Unsupervised Global Feature vectors
 
+### Multidimensional Scaling(MDS)
+* PCA와 목적, 취지는 유사함. High dimension에서 가지던 관계성(거리)을 low dimension에서도 유지 목적
+* low-dim distance와 ideal(original) distance간의 차를 최소화
+* $\displaystyle\min_x \displaystyle\sum_{i<j} (||x_i - x_j|| - \delta_{i, j})^2$
+* 알고리즘 : gradient-descent type
+* Nonlinear Unsupervised Global Similarity input
+* Metric & Nonmetric MDS
+    - Nonmetric : distance value들 간의 순서만 보존(값 x)
+
+### Sammon's mapping
+* 상대적으로 짧은 거리를 중시(distance가 먼 경우 작은 변화에도 영향력이 커지기 때문) / MDS의 local version
+* $E = \frac{1}{\displaystyle\sum_{i<j}d_{ij}^*}\displaystyle\sum_{i<j}\frac{(d_{ij}^* - d_{ij})^2}{d_{ij}^*}$
+    - $d_{ij}^*$는 original distance
+    - $d_{ij}$는 low-dim distance
+* 알고리즘 : gradient-descent type
+* Nonlinear Unsupervised Local Similarity input
+
+### $cos$ similarity
+* 벡터간의 distance보다 방향성에 집중
+    - ex) document의 내용, 주제 등을 다룰 때
+* 벡터가 이루는 각도인 $\theta$가 작을수록 $cos \theta$는 커지고, 이는 두 벡터의 방향이 유사한 정도를 나타낸다.
+* 벡터의 내적 : $\vec{A}\cdot\vec{B} = |A||B|cos\theta$
+
+## Clustering
+* 군집 분류 : target variable 없이 데이터를 이용해 군집으로 분류하는 비지도학습 기법
+
+### K-means algorithm
+* Concepts : 대표점을 random initialize 이후 최적화
+    - 대표점(cluster centroids)을 설정한 후 각 점들에 대해 가까운 대표점을 기준으로 군집을 나눈다.(대표점들에 수직인 직선으로 분류)
+    - 대표점을 해당 군집의 평균값으로 이동한다.
+    - 이동한 대표점으로 다시 군집을 나눈다.
+    - 이를 더이상 군집이 변화하지 않을때까지 반복한다.
+* Algorithm
+    - Input : $K$ (number of clusters) & Training Set {$x^{(1)}, \cdots, x^{(m)}$}
+    - $K$개의 cluster centroids $\mu_1, \mu_2, \cdots, \mu_K$를  randomly initialize 한 후, 다음을 반복한다. ($m$은 데이터 수)
+    - for $i = 1$ to $m$ :  
+        $c^{(i)}$ := $x^{(i)}$와 가장 가까운 cluster centroid의 index(1부터 $K$까지)
+    - for $k = 1$ to $K$ :  
+        $\mu_k$ := cluster $k$에 속한 점들의 평균값
+* Optimization objective
+    - $J(c^{(i)}, \cdots, c^{(m)}, \mu_1, \cdots, \mu_K) = \frac1m \displaystyle\sum_{i=1}^m ||x^{(i)} - \mu_{c^{(i)}}||^2$
+        - $i$번째 벡터와 그의 cluster centroid의 차를 최소화
+* Random initialization
+    - $K < m$
+    - $K$개의 training example을 골라 $\mu_1, \cdots, \mu_K$로 initialize한다.
+        - 모든 $x^{(i)}$의 $c^{(i)}$를 randomly initialize하는 방법도 있다.
+    - Local optima
+        + 알고리즘 실행 결과가 달라질 수 있다.
+        + random initialize를 여러번 수행해 가장 작은 cost function $J$ 값을 반환하는 clustering을 고르면 된다.
+* Choosing the number of clusters
+    - Elbow method
+        + $K$가 증가할수록 일반적으로 $J$는 감소한다.
+        + 그래프상에서 기울기의 경사가 갑자기 완만해지는 지점(elbow)의 $K$가 최적이 된다.
+* K-means algorithm은 linear clustering이므로 군집분류를 할 수 없는 경우도 많이 존재
+
+## Neural Network
+### Deep Learning
+* 머신러닝에 비해 더 많은 데이터가 필요하지만, 더 좋은 성능을 보인다.
+* 게임, 얼굴 인식, 물체 인식, 이미지 캡셔닝, 기계 번역 등에 활용
+
+### Perceptron
+* Single Layer Perceptron : Hard thresholding function
+    - $y = \begin{cases}1 & w_0 + w_1x_1 + w_2x_2 \ge 0 \\ 0 & otherwise \end{cases}$
+    - AND Gate  
+    ex) $ y = \begin{cases}1 & -0.8 + 0.5x_1 + 0.5x_2 \ge 0 \\ 0 & otherwise \end{cases}$
+        + $x_1, x_2$가 0 또는 1일때, 둘 다 1일 때만 $y = 1$
+    - OR Gate  
+    ex) $ y = \begin{cases}1 & -0.3 + 0.5x_1 + 0.5x_2 \ge 0 \\ 0 & otherwise \end{cases}$
+        + $x_1, x_2$가 0 또는 1일때, 둘 중 하나라도 1이면 $y = 1$
+    - XOR Gate
+        + Linear로는 풀 수 X (XOR는 Non-linear)
+        + AND, OR Gate를 feature로 하는 층을 쌓으면 풀 수 있다.
+        + $\therefore$ 선형 모델도 층을 쌓으면 비선형을 풀 수 있다.
+* Neural Network Architecture
+    - input layer - hidden layer - output layer
 
 
 

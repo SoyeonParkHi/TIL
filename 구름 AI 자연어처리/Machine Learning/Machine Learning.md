@@ -259,6 +259,13 @@ $\theta_j:=\theta_j - \alpha \frac{\partial}{\partial\theta_j}J(\theta)$에서 $
 * Neural Network Architecture
     - input layer - hidden layer - output layer
 
+### Forward Propagation
+* 뉴럴 네트워크 모델의 입력층부터 출력층까지 순서대로 변수들을 계산하고 저장하는 것
+* Notation
+    - $a_i^j$ : activation of i-th unit in j-th layer
+    - $Θ^{(j)}$ : j-th layer에서 j+1번째 layer로 매핑하는 matrix of weights
 
-
+### Backward Propagation
+* 뉴럴 네트워크의 파라미터들에 대한 gradient를 계산
+* Chain Rule : $\frac{\partial f}{\partial x} = \frac{\partial f}{\partial q}\frac{\partial q}{\partial x}$
 

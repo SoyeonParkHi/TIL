@@ -21,6 +21,5 @@ def solution(rows, columns, queries):
                 nums[x2-1][j] = nums[x2-1][j+1]
             if j > y1 :
                 nums[x1-1][j] = nums[x1-1][j-1]
-        nums[x1-1][y1] = temp_min
         nums[x2-1][y2-2] = temp_max
     return answer

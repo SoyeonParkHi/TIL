@@ -1,3 +1,5 @@
+> 구름 AI 자연어처리 전문가 양성 과정
+
 ## 목차
 * [Lenear regression with one variable](#linear-regression-with-one-variable)
 * [Linear Regression with multiple variables](#linear-regression-with-multiple-variables)
@@ -269,3 +271,7 @@ $\theta_j:=\theta_j - \alpha \frac{\partial}{\partial\theta_j}J(\theta)$에서 $
 * 뉴럴 네트워크의 파라미터들에 대한 gradient를 계산
 * Chain Rule : $\frac{\partial f}{\partial x} = \frac{\partial f}{\partial q}\frac{\partial q}{\partial x}$
 
+
+> 러닝스푼즈 데이터 사이언티스트에게 배우는 파이썬 머신러닝 & 포트폴리오
+### 집 값 예측
+* 공분산 : 

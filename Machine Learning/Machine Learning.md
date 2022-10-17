@@ -271,11 +271,35 @@ $\theta_j:=\theta_j - \alpha \frac{\partial}{\partial\theta_j}J(\theta)$에서 $
 * 뉴럴 네트워크의 파라미터들에 대한 gradient를 계산
 * Chain Rule : $\frac{\partial f}{\partial x} = \frac{\partial f}{\partial q}\frac{\partial q}{\partial x}$
 
+--------------------
 
 > 러닝스푼즈 데이터 사이언티스트에게 배우는 파이썬 머신러닝 & 포트폴리오
-### 집 값 예측
-* 공분산과 상관계수 : 변수 x가 증가할때 y가 증가하면 양의 상관관계, y가 감소하면 음의 상관관계, 둘 다 아니면 상관관계 없음
+## 보스턴 집 값 예측
+
+### 공분산과 상관계수
+- 변수 x가 증가할때 y가 증가하면 양의 상관관계, y가 감소하면 음의 상관관계, 둘 다 아니면 상관관계 없음
     - x, y가 독립이라면 공분산은 0
     - 상관계수는 x와 y의 크기에 영향을 받는 공분산의 단점을 보완($-1 \le p \le 1$)
-* 차원축소(PCA)
-    - 
+    ```python
+    x.cov(y) # 공분산
+    x.corr(y) # 상관계수
+    ```
+### 차원축소(PCA)
+- 수행 이유 : 변수(feature)의 조합을 통해 새로운 feature를 발견하고 차원의 저주(데이터 많아지는 현상) 방지
+```python
+from sklearn.decomposition import PCA
+
+pca = PCA(n_components) # 객체 생성
+pca.fit(x) # x 데이터 학습
+pca.components_ # 이전 변수의 분산의 담김 정도
+pca.explained_variance_ratio_ # 새로운 변수가 설명하는 분산의 비율
+pca.transform(x) # 학습한 내용 바탕으로 데이터 변환
+pca.fit_transform(x) # 학습과 변환 데이터가 같을 때 한번에 수행
+```
+- 정규화(normalization) 반드시 필요
+```python
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler() # 객체 생성
+scaler.fit_transform(x) # 정규화할 데이터 학습 및 변환
+```

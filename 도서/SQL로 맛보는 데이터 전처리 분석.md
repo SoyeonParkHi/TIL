@@ -93,3 +93,35 @@ AS SELECT -- 생성할 VIEW의 내용
 ### 데이터 생성
 - ERD를 통해 데이터 구조 파악
 ### 구매 지표 추출
+* 매출액
+    - 일별 매출액 조회
+    ```SQL
+    SELECT A.ORDERDATE, SUM(B.PRICEEACH * B.QUANTITYORDERED) AS SALES FROM classicmodels.ORDERS A LEFT JOIN classicmodels.ORDERDETAILS B ON A.ORDERNUMBER = B.ORDERNUMBER
+    GROUP BY 1
+    ORDER BY 1;
+    ```
+    - 월별 매출액 조회
+        + SUBSTR(칼럼, 위치, 길이) : 문자열에서 원하는 부분만 가져오기
+    ```SQL
+    SELECT SUBSTR(A.ORDERDATE,1,7) AS MONTH, SUM(B.PRICEEACH * B.QUANTITYORDERED) AS SALES FROM classicmodels.ORDERS A LEFT JOIN classicmodels.ORDERDETAILS B ON A.ORDERNUMBER = B.ORDERNUMBER
+    GROUP BY 1
+    ORDER BY 1;
+    ```
+    - 연도별 매출액 조회
+    ```SQL
+    SELECT SUBSTR(A.ORDERDATE,1,4) AS YEAR, SUM(B.PRICEEACH * B.QUANTITYORDERED) AS SALES FROM classicmodels.ORDERS A LEFT JOIN classicmodels.ORDERDETAILS B ON A.ORDERNUMBER = B.ORDERNUMBER
+    GROUP BY 1
+    ORDER BY 1;
+    ```
+* 구매자 수, 구매 건수(일자별, 월별, 연도별)
+* 인당 매출액(연도별)
+* 건당 구매 금액(ATV, Average Transaction Value)(연도별)
+### 그룹별 구매 지표 구하기
+* 국가별, 도시별 매출액
+* 북미(USA, Canada) vs 비북미 매출액 비교
+### 재구매율
+* 국가별 2004, 2005 Retention Rate(%)
+### Best Seller
+### Churn Rate(%)
+* Churn Rate
+* Churn 고객이 가장 많이 구매한 Productline
